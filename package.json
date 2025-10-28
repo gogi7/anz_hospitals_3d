@@ -1,0 +1,20 @@
+{
+  "name": "anz-hospitals-3d",
+  "version": "1.0.0",
+  "description": "Interactive 3D dashboard for Australian hospitals with isometric view",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "d3": "^7.8.5",
+    "animejs": "^3.2.2"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

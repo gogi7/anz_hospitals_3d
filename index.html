@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Hospitals 3D Dashboard</title>
+    <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Main canvas for Three.js -->
+        <canvas id="canvas3d"></canvas>
+
+        <!-- SVG overlay for D3.js map -->
+        <svg id="map-overlay"></svg>
+
+        <!-- UI Overlay -->
+        <div id="ui-overlay">
+            <header>
+                <h1>Australian Hospitals Dashboard</h1>
+                <button id="back-btn" class="hidden">← Back to Map</button>
+            </header>
+
+            <!-- Hospital selection info -->
+            <div id="info-panel" class="panel hidden">
+                <h2 id="hospital-name"></h2>
+                <p id="hospital-location"></p>
+            </div>
+
+            <!-- Equipment data panel -->
+            <div id="equipment-panel" class="panel hidden">
+                <button id="close-equipment" class="close-btn">×</button>
+                <h2 id="equipment-name"></h2>
+                <div id="equipment-type" class="equipment-type"></div>
+
+                <div class="status-section">
+                    <h3>Health Status</h3>
+                    <div id="health-status" class="health-indicator"></div>
+                    <div id="health-metrics"></div>
+                </div>
+
+                <div class="logs-section">
+                    <h3>Recent Machine Logs</h3>
+                    <div id="machine-logs"></div>
+                </div>
+
+                <div class="stats-section">
+                    <h3>Performance Metrics</h3>
+                    <canvas id="metrics-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
