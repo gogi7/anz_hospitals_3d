@@ -6,6 +6,7 @@ export class HospitalView {
         this.sceneManager = sceneManager;
         this.hospitalGroup = new THREE.Group();
         this.equipmentObjects = [];
+        this.animatedParts = [];
     }
 
     build(hospital) {
@@ -57,11 +58,11 @@ export class HospitalView {
         const gridHelper = new THREE.GridHelper(
             Math.max(width, depth),
             20,
-            0x3498db,
-            0xbdc3c7
+            0x6366f1,
+            0x8b5cf6
         );
         gridHelper.position.y = 0.26;
-        gridHelper.material.opacity = 0.3;
+        gridHelper.material.opacity = 0.2;
         gridHelper.material.transparent = true;
         this.hospitalGroup.add(gridHelper);
     }
@@ -229,8 +230,10 @@ export class HospitalView {
         const group = new THREE.Group();
         const material = new THREE.MeshStandardMaterial({
             color: spec.color,
-            roughness: 0.3,
-            metalness: 0.7
+            roughness: 0.2,
+            metalness: 0.8,
+            emissive: new THREE.Color(spec.color),
+            emissiveIntensity: 0.1
         });
 
         // Main cylinder (bore)
@@ -238,18 +241,29 @@ export class HospitalView {
         const bore = new THREE.Mesh(boreGeometry, material);
         bore.rotation.z = Math.PI / 2;
         bore.castShadow = true;
+        bore.name = 'mri_bore_animated';
         group.add(bore);
 
-        // Patient table
+        // Patient table (animated moving in/out)
         const tableGeometry = new THREE.BoxGeometry(0.6, 0.1, spec.dimensions.depth + 1);
         const tableMaterial = new THREE.MeshStandardMaterial({
             color: 0x95a5a6,
-            roughness: 0.5
+            roughness: 0.4,
+            metalness: 0.3
         });
         const table = new THREE.Mesh(tableGeometry, tableMaterial);
         table.position.y = -0.5;
         table.castShadow = true;
+        table.name = 'mri_table_animated';
         group.add(table);
+
+        // Store animated parts
+        this.animatedParts.push({
+            object: table,
+            type: 'mri_table',
+            initialZ: 0,
+            time: Math.random() * 100
+        });
 
         // Side panels
         this.addEquipmentDetails(group, spec.color);
@@ -261,22 +275,33 @@ export class HospitalView {
         const group = new THREE.Group();
         const material = new THREE.MeshStandardMaterial({
             color: spec.color,
-            roughness: 0.3,
-            metalness: 0.6
+            roughness: 0.2,
+            metalness: 0.7,
+            emissive: new THREE.Color(spec.color),
+            emissiveIntensity: 0.15
         });
 
-        // Main ring (gantry)
+        // Main ring (gantry) - animated rotating
         const gantryGeometry = new THREE.TorusGeometry(0.9, 0.3, 16, 32);
         const gantry = new THREE.Mesh(gantryGeometry, material);
         gantry.rotation.y = Math.PI / 2;
         gantry.castShadow = true;
+        gantry.name = 'ct_gantry_animated';
         group.add(gantry);
+
+        // Store animated part
+        this.animatedParts.push({
+            object: gantry,
+            type: 'ct_gantry',
+            time: Math.random() * 100
+        });
 
         // Patient table
         const tableGeometry = new THREE.BoxGeometry(0.5, 0.1, spec.dimensions.depth);
         const tableMaterial = new THREE.MeshStandardMaterial({
             color: 0x7f8c8d,
-            roughness: 0.5
+            roughness: 0.4,
+            metalness: 0.3
         });
         const table = new THREE.Mesh(tableGeometry, tableMaterial);
         table.position.y = -0.5;
@@ -391,6 +416,22 @@ export class HospitalView {
         group.add(detail1);
     }
 
+    update(deltaTime) {
+        // Animate equipment parts
+        this.animatedParts.forEach(part => {
+            part.time += deltaTime;
+
+            if (part.type === 'ct_gantry') {
+                // Rotate CT gantry continuously
+                part.object.rotation.y += deltaTime * 0.5;
+            } else if (part.type === 'mri_table') {
+                // Move MRI table in and out
+                const offset = Math.sin(part.time * 0.3) * 0.5;
+                part.object.position.z = part.initialZ + offset;
+            }
+        });
+    }
+
     clear() {
         this.equipmentObjects.forEach(obj => {
             this.sceneManager.removeObject(obj);
@@ -403,6 +444,7 @@ export class HospitalView {
 
         this.hospitalGroup.clear();
         this.equipmentObjects = [];
+        this.animatedParts = [];
     }
 
     getEquipmentObjects() {

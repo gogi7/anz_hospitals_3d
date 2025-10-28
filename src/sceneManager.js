@@ -4,6 +4,7 @@ export class SceneManager {
     constructor(canvas) {
         this.canvas = canvas;
         this.scene = new THREE.Scene();
+        this.clock = new THREE.Clock();
         this.setupRenderer();
         this.setupCamera();
         this.setupLights();
@@ -11,6 +12,7 @@ export class SceneManager {
 
         this.objects = [];
         this.clickableObjects = [];
+        this.animatedObjects = [];
 
         // Handle window resize
         window.addEventListener('resize', () => this.handleResize());
@@ -20,7 +22,8 @@ export class SceneManager {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            alpha: true
+            alpha: true,
+            powerPreference: 'high-performance'
         });
 
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -28,6 +31,14 @@ export class SceneManager {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.setClearColor(0x000000, 0);
+
+        // Better tone mapping and color space
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.2;
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        // Enable physically correct lights
+        this.renderer.physicallyCorrectLights = true;
     }
 
     setupCamera() {
@@ -144,6 +155,19 @@ export class SceneManager {
 
     hideGround() {
         this.ground.visible = false;
+    }
+
+    setShadowsEnabled(enabled) {
+        this.renderer.shadowMap.enabled = enabled;
+        this.mainLight.castShadow = enabled;
+    }
+
+    addAnimatedObject(object, updateCallback) {
+        this.animatedObjects.push({ object, updateCallback });
+    }
+
+    getDeltaTime() {
+        return this.clock.getDelta();
     }
 
     render() {

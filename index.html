@@ -17,8 +17,36 @@
         <!-- UI Overlay -->
         <div id="ui-overlay">
             <header>
-                <h1>Australian Hospitals Dashboard</h1>
-                <button id="back-btn" class="hidden">← Back to Map</button>
+                <div class="header-left">
+                    <h1>Australian Hospitals Dashboard</h1>
+                    <div class="breadcrumb" id="breadcrumb">
+                        <span class="breadcrumb-item active">Map View</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" class="icon-btn" title="Toggle Theme">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button id="settings-btn" class="icon-btn" title="Settings">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 1v6m0 6v6m0-12l-4.5 2.6m9 0l4.5-2.6m-9 10.8L7.5 18m9 0l4.5 2.6M4.5 5.4L9 8m6 0l4.5-2.6M4.5 18.6L9 16m6 0l4.5 2.6"></path>
+                        </svg>
+                    </button>
+                    <button id="fullscreen-btn" class="icon-btn" title="Fullscreen">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                        </svg>
+                    </button>
+                    <button id="back-btn" class="hidden glass-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Back to Map
+                    </button>
+                </div>
             </header>
 
             <!-- Hospital selection info -->
@@ -50,10 +78,78 @@
                 </div>
             </div>
 
+            <!-- Mini-map -->
+            <div id="mini-map" class="mini-map hidden">
+                <canvas id="mini-map-canvas"></canvas>
+                <div class="mini-map-label">Hospital Overview</div>
+            </div>
+
+            <!-- Stats HUD -->
+            <div id="stats-hud" class="stats-hud hidden">
+                <div class="stat-item">
+                    <div class="stat-label">Active Equipment</div>
+                    <div class="stat-value" id="active-equipment">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Operational</div>
+                    <div class="stat-value" id="operational-count">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Warnings</div>
+                    <div class="stat-value warning" id="warning-count">0</div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div id="settings-panel" class="settings-panel hidden">
+                <div class="panel-header">
+                    <h3>Settings</h3>
+                    <button class="close-btn" id="close-settings">×</button>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-group">
+                        <label>Graphics Quality</label>
+                        <select id="quality-select">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="ultra">Ultra</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Camera Speed</label>
+                        <input type="range" id="camera-speed" min="0.5" max="2" step="0.1" value="1">
+                    </div>
+                    <div class="setting-group">
+                        <label>Shadows</label>
+                        <input type="checkbox" id="shadows-toggle" checked>
+                    </div>
+                    <div class="setting-group">
+                        <label>Post-Processing</label>
+                        <input type="checkbox" id="postprocess-toggle" checked>
+                    </div>
+                    <div class="setting-group">
+                        <label>Particles</label>
+                        <input type="checkbox" id="particles-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notifications -->
+            <div id="toast-container"></div>
+
             <!-- Loading indicator -->
             <div id="loading" class="hidden">
-                <div class="spinner"></div>
-                <p>Loading...</p>
+                <div class="loading-content">
+                    <div class="spinner-modern"></div>
+                    <div class="loading-text">
+                        <h3>Loading Hospital Data</h3>
+                        <p id="loading-status">Initializing 3D environment...</p>
+                    </div>
+                    <div class="loading-bar">
+                        <div class="loading-progress" id="loading-progress"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
